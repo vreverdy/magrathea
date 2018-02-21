@@ -69,7 +69,7 @@ using namespace magrathea;
 int main(int argc, char* argv[])
 {
     // Constants
-    /*using integer = int;
+    using integer = int;
     using uint = unsigned int;
     using real = double;
     using floating = float;
@@ -187,11 +187,11 @@ int main(int argc, char* argv[])
     std::string interp;
     std::string stat;
     Timer<real> timer;
-    FileList conefile(conefmt, zero, ncones, zero, conedir);*/
-    //SimpleHyperOctree<real, SimpleHyperOctreeIndex<uint, dimension>, std::string, dimension, position, extent> filetree;
-    //SimpleHyperOctree<real, SimpleHyperOctreeIndex<indexing, dimension>, Gravity<floating, dimension>, dimension, position, extent> octree;
-    //SimpleHyperOctree<real, SimpleHyperOctreeIndex<indexing, dimension>, Gravity<floating, dimension>, dimension, position, extent> homotree;
-    /*std::mt19937 engine(seed > zero ? seed : std::random_device()());
+    FileList conefile(conefmt, zero, ncones, zero, conedir);
+    SimpleHyperOctree<real, SimpleHyperOctreeIndex<uint, dimension>, std::string, dimension, position, extent> filetree;
+    SimpleHyperOctree<real, SimpleHyperOctreeIndex<indexing, dimension>, Gravity<floating, dimension>, dimension, position, extent> octree;
+    SimpleHyperOctree<real, SimpleHyperOctreeIndex<indexing, dimension>, Gravity<floating, dimension>, dimension, position, extent> homotree;
+    std::mt19937 engine(seed > zero ? seed : std::random_device()());
     std::uniform_real_distribution<real> distribution(zero, one);
     HyperSphere<dimension, point> sphere(center, diameter/two);
     HyperCube<dimension, point> cube(center, diameter);
@@ -563,7 +563,7 @@ int main(int argc, char* argv[])
     }
     
     // Finalization
-    MPI_Finalize();*/
+    MPI_Finalize();
     return 0;
 }
 // -------------------------------------------------------------------------- //
