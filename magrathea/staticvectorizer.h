@@ -2516,7 +2516,7 @@ inline Crtp<Return, Parameters...> StaticVectorizer<Kind, Size, Crtp, Type, Para
     for (unsigned int i = 0; i < Size; ++i) {
         Vectorizer::get(result, i) = f(Vectorizer::get(result, i), Vectorizer::get(arg, i));
     }
-    return result.combine<Return>(f, args...);
+    return result.template combine<Return>(f, args...);
 }
 
 // Unique combination by a function object

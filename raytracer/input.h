@@ -224,7 +224,7 @@ inline Type Input::mean(const Octree& octree, const Element& element, int level)
     static const int one = 1;
     static const int two = 2;
     const unsigned int size = octree.size();
-    const Index index = ((std::get<0>(element).level() > zero) && (std::get<0>(element).level() > level)) ? (std::get<0>(element).previous(zero, (level < zero) ? (std::get<0>(element).level()-one) : (level))) : (std::get<0>(element));
+    const Index index = ((std::get<0>(element).level() > zero) && (static_cast<int>(std::get<0>(element).level()) > level)) ? (std::get<0>(element).previous(zero, (level < zero) ? (std::get<0>(element).level()-one) : (level))) : (std::get<0>(element));
     const unsigned int lvl = index.level();
     const unsigned long long int nx = index.coordinate(zero);
     const unsigned long long int ny = index.coordinate(one);

@@ -171,7 +171,7 @@ inline bool FileSystem::endianness()
 template <bool Byteswap, typename Type, class>
 inline bool FileSystem::byteswap(const Type& variable)
 {
-    return Byteswap*sizeof(variable);
+    return Byteswap && sizeof(variable);
 }
 
 // Swap bytes
@@ -634,7 +634,7 @@ unsigned int FileSystem::unsplit(const Container& filenames, const std::string& 
         }
         if (ok) {
             output.open(filename, mode | std::ios::binary);
-            ok = output;
+            ok = static_cast<bool>(output);
             if (ok) {
                 if (chunk < 0) {
                     for (unsigned int file = 0; (file < nfiles) && (ok); ++file) {
@@ -724,7 +724,7 @@ unsigned int FileSystem::join(const Container& filenames, const std::string& fil
         }
         if (ok) {
             output.open(filename, mode | std::ios::binary);
-            ok = output;
+            ok = static_cast<bool>(output);
             if (ok) {
                 if (chunk < 0) {
                     for (unsigned int file = 0; (file < nfiles) && (ok); ++file) {

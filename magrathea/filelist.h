@@ -160,9 +160,9 @@ class FileList final
     //@{
     public:
         template <typename IndexType = std::true_type, class = typename std::enable_if<(std::is_same<IndexType, std::true_type>::value) || (std::is_convertible<IndexType, unsigned int>::value)>::type> static inline std::string generate(const IndexType i = IndexType());
-        template <class ContainerType, class = typename std::enable_if<!(std::is_convertible<ContainerType, std::string>::value) && (std::is_convertible<typename std::remove_reference<decltype(*std::begin(std::declval<ContainerType>()))>::type, std::string>::value)>::type> static constexpr std::string generate(const unsigned int i, const ContainerType& source);
+        template <class ContainerType, class = typename std::enable_if<!(std::is_convertible<ContainerType, std::string>::value) && (std::is_convertible<typename std::remove_reference<decltype(*std::begin(std::declval<ContainerType>()))>::type, std::string>::value)>::type> static inline std::string generate(const unsigned int i, const ContainerType& source);
         template <unsigned int BufferSize = std::numeric_limits<unsigned char>::max()*std::numeric_limits<unsigned char>::digits, typename WidthType = std::true_type, class = typename std::enable_if<(std::is_same<WidthType, std::true_type>::value) || (std::is_convertible<WidthType, int>::value)>::type> static inline std::string generate(const unsigned int i, const std::string& cformat, const WidthType width = WidthType());
-        template <class Function, class = typename std::enable_if<(std::is_convertible<typename std::remove_reference<typename std::result_of<Function(const unsigned int)>::type>::type, std::string>::value) && !(std::is_same<typename std::decay<Function>::type, FileList>::value)>::type> static constexpr std::string generate(const unsigned int i, Function&& f);
+        template <class Function, class = typename std::enable_if<(std::is_convertible<typename std::remove_reference<typename std::result_of<Function(const unsigned int)>::type>::type, std::string>::value) && !(std::is_same<typename std::decay<Function>::type, FileList>::value)>::type> static inline std::string generate(const unsigned int i, Function&& f);
         template <typename Dir = unsigned int, typename Min = unsigned int, typename Num = unsigned int, typename Max = unsigned int, class = typename std::enable_if<(std::is_convertible<Dir, unsigned int>::value) && (std::is_convertible<Min, unsigned int>::value) && (std::is_convertible<Num, unsigned int>::value) && (std::is_convertible<Max, unsigned int>::value)>::type> static unsigned int numberify(const std::string& str, unsigned int pos = std::numeric_limits<unsigned int>::max(), Dir&& dir = Dir(), Min&& min = Min(), Num&& num = Num(), Max&& max = Max());
     //@}
 
@@ -1368,7 +1368,7 @@ inline std::string FileList::generate(const IndexType i)
 /// \param[in]      source Source container.
 /// \return         File name.
 template <class ContainerType, class>
-constexpr std::string FileList::generate(const unsigned int i, const ContainerType& source)
+inline std::string FileList::generate(const unsigned int i, const ContainerType& source)
 {
     return (std::begin(source)+i < std::end(source)) ? (*(std::begin(source)+i)) : (std::string());
 }
@@ -1402,7 +1402,7 @@ inline std::string FileList::generate(const unsigned int i, const std::string& c
 /// \param[in]      f Function object <tt>std::string(const unsigned int)</tt>.
 /// \return         File name.
 template <class Function, class>
-constexpr std::string FileList::generate(const unsigned int i, Function&& f)
+inline std::string FileList::generate(const unsigned int i, Function&& f)
 {
     return f(i);
 }

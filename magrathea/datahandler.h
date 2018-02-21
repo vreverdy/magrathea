@@ -1951,7 +1951,7 @@ std::string DataHandler::stringify(const std::array<Type, Size>& container)
 template <unsigned int Base, char Leading, unsigned int Current, typename... Types> 
 std::string DataHandler::stringify(const std::tuple<Types...>& container)
 {
-    return ((Current+1) < sizeof...(Types)) ? (stringify<Base, Leading>(std::get<Current>(container))+std::string((bytesize(std::get<Current>(container)) > 0) ? (" ") : (""))+stringify<Base, Leading, ((Current+1) < sizeof...(Types))*(Current+1)>(container)) : (hexify<Base, Leading>(std::get<Current>(container)));
+    return ((Current+1) < sizeof...(Types)) ? (stringify<Base, Leading>(std::get<Current>(container))+std::string((bytesize(std::get<Current>(container)) > 0) ? (" ") : (""))+stringify<Base, Leading, ((Current+1) < sizeof...(Types))*(Current+1)>(container)) : (stringify<Base, Leading>(std::get<Current>(container)));
 }
 
 // Convert an empty range to a string

@@ -180,7 +180,7 @@ template <typename Type, class Period, class Clock>
 template <class Duration, class ReferenceTimePoint, class BeginningTimePoint, class EndingTimePoint> 
 inline Timer<Type, Period, Clock>::Timer(const bool running0, const Duration& record0, const ReferenceTimePoint& reference0, const BeginningTimePoint& beginning0, const EndingTimePoint& ending0)
 : _running(running0)
-,_record(std::chrono::duration_cast<typename Clock::duration>(typename std::conditional<std::is_arithmetic<Duration>::value, std::chrono::duration<Type, Period>, Duration>::type(record0)))
+, _record(std::chrono::duration_cast<typename Clock::duration>(typename std::conditional<std::is_arithmetic<Duration>::value, std::chrono::duration<Type, Period>, Duration>::type(record0)))
 , _reference((std::is_same<ReferenceTimePoint, std::true_type>::value) ? (Clock::now()) : (std::chrono::time_point_cast<typename Clock::duration>(typename std::conditional<std::is_same<ReferenceTimePoint, std::true_type>::value, typename Clock::time_point, ReferenceTimePoint>::type(typename std::conditional<std::is_same<ReferenceTimePoint, std::true_type>::value, typename Clock::duration, ReferenceTimePoint>::type(reference0)))))
 , _beginning((std::is_same<BeginningTimePoint, std::true_type>::value) ? (_reference) : (std::chrono::time_point_cast<typename Clock::duration>(typename std::conditional<std::is_same<BeginningTimePoint, std::true_type>::value, typename Clock::time_point, BeginningTimePoint>::type(typename std::conditional<std::is_same<BeginningTimePoint, std::true_type>::value, typename Clock::duration, BeginningTimePoint>::type(beginning0)))))
 , _ending((std::is_same<EndingTimePoint, std::true_type>::value) ? (_beginning) : (std::chrono::time_point_cast<typename Clock::duration>(typename std::conditional<std::is_same<EndingTimePoint, std::true_type>::value, typename Clock::time_point, EndingTimePoint>::type(typename std::conditional<std::is_same<EndingTimePoint, std::true_type>::value, typename Clock::duration, EndingTimePoint>::type(ending0)))))
@@ -552,7 +552,7 @@ inline std::chrono::duration<Type, Period> Timer<Type, Period, Clock>::benchmark
     for (Counter i = Counter(); i < counter; ++i) {
         temporary = f(std::forward<Args>(args)...);
     }
-    (void)(temporary);
+    *reinterpret_cast<volatile unsigned char*>(&temporary) = *reinterpret_cast<volatile unsigned char*>(&temporary) + static_cast<unsigned char>(0);
     return std::chrono::duration_cast<std::chrono::duration<Type, Period> >(Clock::now()-marker);
 }
 // -------------------------------------------------------------------------- //

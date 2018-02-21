@@ -168,7 +168,7 @@ double Utility::parallelize(const Type& first, const Type& last, const Type& inc
     for (ivalue = 0; ivalue < size-group; ivalue += group) {
         threads.push_back(std::thread([=, &first, &increment, &size, &group, &function](){for (long long int i = ivalue; i < std::min(ivalue+group, size); ++i) function(first+Type(i)*increment);}));
     }
-    for (ivalue = ivalue; ivalue < size; ++ivalue) {
+    for (; ivalue < size; ++ivalue) {
         function(first+Type(ivalue)*increment);
     }
     std::for_each(threads.begin(), threads.end(), [](std::thread& current){current.join();});

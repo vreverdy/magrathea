@@ -177,7 +177,7 @@ class SimpleHyperOctreeIndex final
     public:
         template <unsigned int From = 0, unsigned int To = Bits/(Dimension+1), unsigned int Mid = From+(To-From)/2, bool Condition = (From != To), class = typename std::enable_if<(From <= Mid) && (Mid <= To) && (To <= Bits/(Dimension+1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> delinearize(const unsigned int ilvl, const Type ilinear);
         template <unsigned int From = 0, unsigned int To = Bits/(Dimension+1), unsigned int Mid = From+(To-From)/2, bool Condition = (From != To), class = typename std::enable_if<(From <= Mid) && (Mid <= To) && (To <= Bits/(Dimension+1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> dezcurvify(const unsigned int ilvl, const Type izcurve);
-        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, typename std::conditional<sizeof...(Types), std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...>, std::tuple<Type> >::type>::type, Type>::value) ? (true) : (sizeof...(Types) == 1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> navigate(Types&&... isites);
+        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, typename std::conditional<static_cast<bool>(sizeof...(Types)), std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...>, std::tuple<Type> >::type>::type, Type>::value) ? (true) : (sizeof...(Types) == 1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> navigate(Types&&... isites);
         template <unsigned int From = 0, unsigned int To = Bits/(Dimension+1), unsigned int Mid = From+(To-From)/2, bool Condition = (From != To), typename... Types, class = typename std::enable_if<(From <= Mid) && (Mid <= To) && (To <= Bits/(Dimension+1)) && ((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> make(const unsigned int ilvl, Types&&... icoords);
         template <typename Kind = double, class Position = std::ratio<0>, class Extent = std::ratio<1>, unsigned int From = 0, unsigned int To = Bits/(Dimension+1), unsigned int Mid = From+(To-From)/2, bool Condition = (From != To), class Reference = typename std::ratio_subtract<Position, typename std::ratio_divide<Extent, std::ratio<2> > >, typename... Kinds, class = typename std::enable_if<(std::is_floating_point<Kind>::value) && (Position::den != 0) && (Extent::num >= 0) && (From <= Mid) && (Mid <= To) && (To <= Bits/(Dimension+1)) && ((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type...> >::type, Type>::value) ? (sizeof...(Kinds) == Dimension) : (sizeof...(Kinds) == 1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> compute(const unsigned int ilvl, Kinds&&... iposs);
         template <typename Kind = double, class Position = std::ratio<0>, class Extent = std::ratio<1>, class Reference = typename std::ratio_subtract<Position, typename std::ratio_divide<Extent, std::ratio<2> > >, typename... Kinds, class = typename std::enable_if<(std::is_floating_point<Kind>::value) && (Position::den != 0) && (Extent::num >= 0) && ((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type...> >::type, Type>::value) ? (sizeof...(Kinds) == Dimension) : (sizeof...(Kinds) == 1))>::type> static constexpr SimpleHyperOctreeIndex<Type, Dimension, Bits> cipher(Kinds&&... iposs);
@@ -222,14 +222,14 @@ class SimpleHyperOctreeIndex final
         template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(1), Integer One = Integer(1), Integer Ones = ~Integer(), Integer Condition = (Step+One <= nhp<Integer>(sizeof(Integer)*std::numeric_limits<unsigned char>::digits)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer bhsmask(const Integer value);
         template <typename Integer, Integer Mask = ~Integer(), Integer Step = nhp<Integer>(sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Zero = Integer(), Integer One = Integer(1), Integer Ones = ~Zero, Integer Size = nhp<Integer>(sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Temporary = block<Integer>(Step, Step), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer lzcnt(const Integer value);
         template <typename Integer, Integer Mask = ~Integer(), Integer Step = nhp<Integer>(sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Zero = Integer(), Integer One = Integer(1), Integer Ones = ~Zero, Integer Size = nhp<Integer>(sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Temporary = periodic<Integer>(Step*(One+One)+(Step == Zero)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer tzcnt(const Integer value);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), bool Temporary = ((Mask >> Step) & Condition), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer popcnt(const Integer value);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer Shift = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), bool Temporary = ((Mask >> Step) & Condition), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer pext(const Integer value); 
-        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer Shift = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), bool Temporary = ((Mask >> Step) & Condition), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer pdep(const Integer value);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Period = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Step = Integer(), Integer Count = Integer(), Integer Zero = Integer(), Integer One = Integer(1), Integer Size = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Condition = (Step+One <= Size), Integer Population = popcnt<Integer>(Mask)+((Period-(popcnt<Integer>(Mask)%Period))*(popcnt<Integer>(Mask)%Period != Zero)), Integer Destination = (((((Mask >> Step) & Condition) ? (Count) : (Zero))%((Population+(Period*(Population+One <= Period)))/Period))*Period)+((((Mask >> Step) & Condition) ? (Count) : (Zero))/((Population+(Period*(Population+One <= Period)))/Period)), bool Temporary = ((Mask >> Step) & Condition) && (Destination < Size), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer itlc(const Integer value);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Period = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Step = Integer(), Integer Count = Integer(), Integer Zero = Integer(), Integer One = Integer(1), Integer Size = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Condition = (Step+One <= Size), Integer Population = popcnt<Integer>(Mask)+((Period-(popcnt<Integer>(Mask)%Period))*(popcnt<Integer>(Mask)%Period != Zero)), Integer Destination = (((((Mask >> Step) & Condition) ? (Count) : (Zero))%Period)*(Population/Period))+((((Mask >> Step) & Condition) ? (Count) : (Zero))/Period), bool Temporary = ((Mask >> Step) & Condition) && (Destination < Size), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer dtlc(const Integer value);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, Integer Step = Integer(), Integer Zero = Integer(), bool Direction = ((!Msb) || ((Length*(Step+1)) <= (sizeof(Integer)*std::numeric_limits<unsigned char>::digits))), Integer Left = ((Msb) ? (sizeof(Integer)*std::numeric_limits<unsigned char>::digits-(Length*(Step+1))) : (Length*Step))*(Direction), Integer Right = ((Msb) ? ((Length*(Step+1))-sizeof(Integer)*std::numeric_limits<unsigned char>::digits) : (Length*Step))*(!Direction), Integer Condition = ((Left+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= Length)), class Tuple, Integer Count = ((std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)-(Step+1)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value) && (std::is_convertible<typename std::tuple_element<Step, typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::type, Integer>::value)>::type> static constexpr Integer glue(Tuple&& tuple);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, Integer Step = Integer(), Integer Zero = Integer(), bool Direction = ((!Msb) || ((Length*(Step+1)) <= (sizeof(Integer)*std::numeric_limits<unsigned char>::digits))), Integer Left = ((Msb) ? (sizeof(Integer)*std::numeric_limits<unsigned char>::digits-(Length*(Step+1))) : (Length*Step))*(Direction), Integer Right = ((Msb) ? ((Length*(Step+1))-sizeof(Integer)*std::numeric_limits<unsigned char>::digits) : (Length*Step))*(!Direction), Integer Condition = ((Left+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= Length)), typename... Integers, Integer Count = sizeof...(Integers), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer glue(const Integer value, const Integers... values);
-        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, Integer Step = Integer(), Integer Zero = Integer(), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer glue();
+        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Temporary = ((Condition) ? (Mask >> Step) : (Condition)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer popcnt(const Integer value);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer Shift = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Temporary = ((Condition) ? (Mask >> Step) : (Condition)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer pext(const Integer value); 
+        template <typename Integer, Integer Mask = ~Integer(), Integer Step = Integer(), Integer Shift = Integer(), Integer One = Integer(1), Integer Condition = (Step+One <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits), Integer Temporary = ((Condition) ? (Mask >> Step) : (Condition)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer pdep(const Integer value);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Period = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Step = Integer(), Integer Count = Integer(), Integer Zero = Integer(), Integer One = Integer(1), Integer Size = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Condition = (Step+One <= Size), Integer Population = popcnt<Integer>(Mask)+((Period-(popcnt<Integer>(Mask)%Period))*(popcnt<Integer>(Mask)%Period != Zero)), Integer Destination = (((((Condition) ? (Mask >> Step) : (Condition)) ? (Count) : (Zero))%((Population+(Period*(Population+One <= Period)))/Period))*Period)+((((Condition) ? (Mask >> Step) : (Condition)) ? (Count) : (Zero))/((Population+(Period*(Population+One <= Period)))/Period)), Integer Temporary = ((Condition) ? (Mask >> Step) : (Condition)) && (Destination < Size), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer itlc(const Integer value);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Period = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Step = Integer(), Integer Count = Integer(), Integer Zero = Integer(), Integer One = Integer(1), Integer Size = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, Integer Condition = (Step+One <= Size), Integer Population = popcnt<Integer>(Mask)+((Period-(popcnt<Integer>(Mask)%Period))*(popcnt<Integer>(Mask)%Period != Zero)), Integer Destination = (((((Condition) ? (Mask >> Step) : (Condition)) ? (Count) : (Zero))%Period)*(Population/Period))+((((Condition) ? (Mask >> Step) : (Condition)) ? (Count) : (Zero))/Period), Integer Temporary = ((Condition) ? (Mask >> Step) : (Condition)) && (Destination < Size), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer dtlc(const Integer value);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, std::size_t Step = Integer(), Integer Zero = Integer(), Integer Direction = ((!Msb) || ((Length*(Step+1)) <= (sizeof(Integer)*std::numeric_limits<unsigned char>::digits))), Integer Left = ((Msb) ? (sizeof(Integer)*std::numeric_limits<unsigned char>::digits-(Length*(Step+1))) : (Length*Step))*(Direction), Integer Right = ((Msb) ? ((Length*(Step+1))-sizeof(Integer)*std::numeric_limits<unsigned char>::digits) : (Length*Step))*(!Direction), Integer Condition = ((Left+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= Length)), class Tuple, Integer Count = ((std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)-(Step+1)), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value) && (std::is_convertible<typename std::tuple_element<Step, typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::type, Integer>::value)>::type> static constexpr Integer glue(Tuple&& tuple);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, std::size_t Step = Integer(), Integer Zero = Integer(), Integer Direction = ((!Msb) || ((Length*(Step+1)) <= (sizeof(Integer)*std::numeric_limits<unsigned char>::digits))), Integer Left = ((Msb) ? (sizeof(Integer)*std::numeric_limits<unsigned char>::digits-(Length*(Step+1))) : (Length*Step))*(Direction), Integer Right = ((Msb) ? ((Length*(Step+1))-sizeof(Integer)*std::numeric_limits<unsigned char>::digits) : (Length*Step))*(!Direction), Integer Condition = ((Left+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= sizeof(Integer)*std::numeric_limits<unsigned char>::digits) && (Right+1 <= Length)), typename... Integers, Integer Count = sizeof...(Integers), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer glue(const Integer value, const Integers... values);
+        template <typename Integer, Integer Mask = ~Integer(), Integer Length = sizeof(Integer)*std::numeric_limits<unsigned char>::digits, bool Msb = false, std::size_t Step = Integer(), Integer Zero = Integer(), class = typename std::enable_if<((std::is_integral<Integer>::value) ? (std::is_unsigned<Integer>::value) : (std::is_convertible<Integer, int>::value)) && (!std::is_floating_point<Integer>::value)>::type> static constexpr Integer glue();
     //@}
 
     // Test 
@@ -374,7 +374,7 @@ inline const Type& SimpleHyperOctreeIndex<Type, Dimension, Bits>::operator()() c
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
 inline bool SimpleHyperOctreeIndex<Type, Dimension, Bits>::operator[](const unsigned int ibit) const
 {
-    return (_data & (std::integral_constant<Type, 1>::value << Type(ibit)))*(ibit < Bits);
+    return (_data & (std::integral_constant<Type, 1>::value << Type(ibit))) && (ibit < Bits);
 }
 //--------------------------------------------------------------------------- //
 
@@ -793,7 +793,7 @@ template <typename Type, unsigned int Dimension, unsigned int Bits>
 template <unsigned int From, unsigned int To, unsigned int Mid, bool Condition, class Level, class> 
 inline Type SimpleHyperOctreeIndex<Type, Dimension, Bits>::linear(const Level ilvl) const
 {
-    return (!std::is_same<Level, std::true_type>::value) ? ((Condition) ? ((ilvl <= Mid) ? (linear<From, Mid>(ilvl)) : (linear<Mid+(Mid != To), To>(ilvl))) : (dtlc<Type, ((~comb<Type>(Dimension+1, Dimension)) << (Bits-(Mid*(Dimension+1))))*(Mid > 0), Dimension>(_data))) : (linear<From, To>(level()));
+    return (!std::is_same<Level, std::true_type>::value) ? ((Condition) ? ((ilvl <= Mid) ? (linear<From, Mid>(ilvl)) : (linear<Mid+(Mid != To), To>(ilvl))) : (dtlc<Type, (Mid > 0) ? ((~comb<Type>(Dimension+1, Dimension)) << (Bits-(Mid*(Dimension+1)))) : (Mid), Dimension>(_data))) : (linear<From, To>(level()));
 }
         
 // Z-curve index
@@ -819,7 +819,7 @@ template <typename Type, unsigned int Dimension, unsigned int Bits>
 template <class Level, class> 
 inline Type SimpleHyperOctreeIndex<Type, Dimension, Bits>::site(const Level ilvl) const
 {
-    const Type shift = (std::is_same<Level, std::true_type>::value) ? (std::integral_constant<Type, Bits>::value-(level()*std::integral_constant<Type, Dimension+1>::value)) : (std::integral_constant<Type, Bits>::value-((ilvl*std::integral_constant<Type, Dimension+1>::value)*(ilvl <= std::integral_constant<Type, Bits/(Dimension+1)>::value)));
+    const Type shift = (std::is_same<Level, std::true_type>::value) ? (std::integral_constant<Type, Bits>::value-(level()*std::integral_constant<Type, Dimension+1>::value)) : (std::integral_constant<Type, Bits>::value-((ilvl*std::integral_constant<Type, Dimension+1>::value)*(Type(ilvl) <= std::integral_constant<Type, Bits/(Dimension+1)>::value)));
     return ((_data >> shift) & (std::integral_constant<Type, block<Type>(0, Dimension)>::value))*(shift < std::integral_constant<Type, Bits>::value);
 }
 
@@ -997,7 +997,7 @@ inline Kind SimpleHyperOctreeIndex<Type, Dimension, Bits>::volume() const
 template <typename Type, unsigned int Dimension, unsigned int Bits>
 inline bool SimpleHyperOctreeIndex<Type, Dimension, Bits>::containing(const SimpleHyperOctreeIndex<Type, Dimension, Bits>& idx) const
 {
-    return (((std::integral_constant<Type, ((~comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)) <= ((std::integral_constant<Type, ((comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)))*(_data <= idx._data);
+    return (((std::integral_constant<Type, ((~comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)) <= ((std::integral_constant<Type, ((comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data))) && (_data <= idx._data);
 }
 
 // Contained by an index
@@ -1011,7 +1011,7 @@ inline bool SimpleHyperOctreeIndex<Type, Dimension, Bits>::containing(const Simp
 template <typename Type, unsigned int Dimension, unsigned int Bits>
 inline bool SimpleHyperOctreeIndex<Type, Dimension, Bits>::contained(const SimpleHyperOctreeIndex<Type, Dimension, Bits>& idx) const
 {
-    return (((std::integral_constant<Type, ((~comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)) <= ((std::integral_constant<Type, ((comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)))*(idx._data <= _data);
+    return (((std::integral_constant<Type, ((~comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data)) <= ((std::integral_constant<Type, ((comb<Type>(Dimension+1, Dimension)) << (Bits%(Dimension+1)))>::value) & (_data ^ idx._data))) && (idx._data <= _data);
 }
 
 // Intersecting an index
@@ -1347,7 +1347,7 @@ template <typename Type, unsigned int Dimension, unsigned int Bits>
 template <class Level, class> 
 constexpr Type SimpleHyperOctreeIndex<Type, Dimension, Bits>::subdivisions(const Level ilvl)
 {
-    return (std::is_same<Level, std::true_type>::value) ? (std::integral_constant<Type, ((std::integral_constant<Type, 1>::value) << (Bits/(Dimension+1)))>::value) : (((std::integral_constant<Type, 1>::value) << (ilvl))*(ilvl <= std::integral_constant<unsigned int, Bits/(Dimension+1)>::value));
+    return (std::is_same<Level, std::true_type>::value) ? (std::integral_constant<Type, ((std::integral_constant<Type, 1>::value) << (Bits/(Dimension+1)))>::value) : (((std::integral_constant<Type, 1>::value) << (ilvl))*(static_cast<unsigned int>(ilvl) <= std::integral_constant<unsigned int, Bits/(Dimension+1)>::value));
 }
 
 // Invalid index
@@ -1399,7 +1399,7 @@ template <typename Type, unsigned int Dimension, unsigned int Bits>
 template <class Template, class Function, class Tuple, typename... Kinds, class> 
 constexpr Template SimpleHyperOctreeIndex<Type, Dimension, Bits>::apply(Function&& f, const Tuple& tuple, Kinds&&... values)
 {
-    return Template{apply<typename std::conditional<sizeof(tuple), typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type, typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type>::type>(std::forward<Function>(f), std::forward<Kinds>(values))...};
+    return Template{apply<typename std::conditional<static_cast<bool>(sizeof(tuple)), typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type, typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type>::type>(std::forward<Function>(f), std::forward<Kinds>(values))...};
 }
 
 // Apply function to value
@@ -1503,7 +1503,7 @@ template <typename Type, unsigned int Dimension, unsigned int Bits>
 template <typename Integer, Integer Zero, Integer One, Integer Ones, Integer Size, class>
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::block(const Integer location, const Integer length)
 {
-    return (location < Size)*(((Ones*(Size <= length)) | (((One << length)*(length < Size))-One)) << location);
+    return (location < Size) ? (((Ones*(Size <= length)) | (((length < Size) ? (One << length) : (Zero))-One)) << location) : (Zero);
 }
 
 // Periodic mask
@@ -1648,7 +1648,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::tzcnt(const Int
 /// \param[in]      value Input value.
 /// \return         Number of bit set.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Step, Integer One, Integer Condition, bool Temporary, class> 
+template <typename Integer, Integer Mask, Integer Step, Integer One, Integer Condition, Integer Temporary, class> 
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::popcnt(const Integer value)
 {
     return (Condition) ? (((Temporary) && ((value >> Step) & Condition))+popcnt<Integer, Mask, Step+Condition>(value)) : (Condition);
@@ -1668,7 +1668,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::popcnt(const In
 /// \param[in]      value Input value.
 /// \return         Extracted bits.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Step, Integer Shift, Integer One, Integer Condition, bool Temporary, class>
+template <typename Integer, Integer Mask, Integer Step, Integer Shift, Integer One, Integer Condition, Integer Temporary, class>
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::pext(const Integer value)
 {
     return (Condition) ? ((!Temporary) ? (pext<Integer, Mask, Step+Condition, Shift+Temporary>(value)) : ((((value >> Step) & Condition) << Shift) | (pext<Integer, Mask, Step+Condition, Shift+Temporary>(value)))) : (Condition);
@@ -1688,7 +1688,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::pext(const Inte
 /// \param[in]      value Input value.
 /// \return         Deposited bits.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Step, Integer Shift, Integer One, Integer Condition, bool Temporary, class>
+template <typename Integer, Integer Mask, Integer Step, Integer Shift, Integer One, Integer Condition, Integer Temporary, class>
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::pdep(const Integer value)
 {
     return (Condition) ? ((!Temporary) ? (pdep<Integer, Mask, Step+Condition, Shift+Temporary>(value)) : ((((value >> Shift) & Condition) << Step) | (pdep<Integer, Mask, Step+Condition, Shift+Temporary>(value)))) : (Condition);
@@ -1716,10 +1716,10 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::pdep(const Inte
 /// \param[in]      value Input value.
 /// \return         Interlaced bits.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Period, Integer Step, Integer Count, Integer Zero, Integer One, Integer Size, Integer Condition, Integer Population, Integer Destination, bool Temporary, class>
+template <typename Integer, Integer Mask, Integer Period, Integer Step, Integer Count, Integer Zero, Integer One, Integer Size, Integer Condition, Integer Population, Integer Destination, Integer Temporary, class>
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::itlc(const Integer value)
 {
-    return (Condition) ? ((Temporary) ? ((((value >> Step) & Condition) << Destination) | itlc<Integer, Mask, Period, Step+Condition, (Count+(((Mask >> (Step+Condition))*(Step+Condition < Size)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value)) : (itlc<Integer, Mask, Period, Step+Condition, (Count+(((Mask >> (Step+Condition))*(Step+Condition < Size)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value))) : (Condition);
+    return (Condition) ? ((Temporary) ? ((((value >> Step) & Condition) << Destination) | itlc<Integer, Mask, Period, Step+Condition, (Count+(((Step+Condition < Size) ? (Mask >> (Step+Condition)) : (Zero)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value)) : (itlc<Integer, Mask, Period, Step+Condition, (Count+(((Step+Condition < Size) ? (Mask >> (Step+Condition)) : (Zero)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value))) : (Condition);
 }
 
 // Deinterlace bits
@@ -1744,10 +1744,10 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::itlc(const Inte
 /// \param[in]      value Input value.
 /// \return         Deinterlaced bits.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Period, Integer Step, Integer Count, Integer Zero, Integer One, Integer Size, Integer Condition, Integer Population, Integer Destination, bool Temporary, class> 
+template <typename Integer, Integer Mask, Integer Period, Integer Step, Integer Count, Integer Zero, Integer One, Integer Size, Integer Condition, Integer Population, Integer Destination, Integer Temporary, class> 
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::dtlc(const Integer value)
 {
-    return (Condition) ? ((Temporary) ? ((((value >> Step) & Condition) << Destination) | dtlc<Integer, Mask, Period, Step+Condition, (Count+(((Mask >> (Step+Condition))*(Step+Condition < Size)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value)) : (dtlc<Integer, Mask, Period, Step+Condition, (Count+(((Mask >> (Step+Condition))*(Step+Condition < Size)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value))) : (Condition);
+    return (Condition) ? ((Temporary) ? ((((value >> Step) & Condition) << Destination) | dtlc<Integer, Mask, Period, Step+Condition, (Count+(((Step+Condition < Size) ? (Mask >> (Step+Condition)) : (Zero)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value)) : (dtlc<Integer, Mask, Period, Step+Condition, (Count+(((Step+Condition < Size) ? (Mask >> (Step+Condition)) : (Zero)) & Condition))*(Step >= tzcnt<Integer>(Mask))>(value))) : (Condition);
 }
 
 // Glue bit fields from tuple
@@ -1772,7 +1772,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::dtlc(const Inte
 /// \param[in]      tuple Input tuple.
 /// \return         Glued bits from tuple.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Length, bool Msb, Integer Step, Integer Zero, bool Direction, Integer Left, Integer Right, Integer Condition, class Tuple, Integer Count, class> 
+template <typename Integer, Integer Mask, Integer Length, bool Msb, std::size_t Step, Integer Zero, Integer Direction, Integer Left, Integer Right, Integer Condition, class Tuple, Integer Count, class> 
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::glue(Tuple&& tuple)
 {
     return (Condition) ? ((Count) ? (((Direction) ? ((Mask & Integer(std::get<Step>(std::forward<Tuple>(tuple)))) << Left) : ((Mask & Integer(std::get<Step>(std::forward<Tuple>(tuple)))) >> Right)) | (glue<Integer, Mask, Length, Msb, (Step+Condition)*(Count > Zero)>(std::forward<Tuple>(tuple)))) : ((Direction) ? ((Mask & Integer(std::get<Step>(std::forward<Tuple>(tuple)))) << Left) : ((Mask & Integer(std::get<Step>(std::forward<Tuple>(tuple)))) >> Right))) : (Zero);
@@ -1801,7 +1801,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::glue(Tuple&& tu
 /// \param[in]      values Input values.
 /// \return         Glued bits.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Length, bool Msb, Integer Step, Integer Zero, bool Direction, Integer Left, Integer Right, Integer Condition, typename... Integers, Integer Count, class> 
+template <typename Integer, Integer Mask, Integer Length, bool Msb, std::size_t Step, Integer Zero, Integer Direction, Integer Left, Integer Right, Integer Condition, typename... Integers, Integer Count, class> 
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::glue(const Integer value, const Integers... values)
 {
     return (Condition) ? ((Count) ? (((Direction) ? ((Mask & value) << Left) : ((Mask & value) >> Right)) | (glue<Integer, Mask, Length, Msb, Step+Condition>(values...))) : ((Direction) ? ((Mask & value) << Left) : ((Mask & value) >> Right))) : (Zero);
@@ -1818,7 +1818,7 @@ constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::glue(const Inte
 /// \tparam         Zero (Value of zero.)
 /// \return         Value of zero.
 template <typename Type, unsigned int Dimension, unsigned int Bits> 
-template <typename Integer, Integer Mask, Integer Length, bool Msb, Integer Step, Integer Zero, class> 
+template <typename Integer, Integer Mask, Integer Length, bool Msb, std::size_t Step, Integer Zero, class> 
 constexpr Integer SimpleHyperOctreeIndex<Type, Dimension, Bits>::glue()
 {
     return Zero;
@@ -1973,7 +1973,7 @@ int SimpleHyperOctreeIndex<Type, Dimension, Bits>::example()
     // Helpers
     std::cout<<std::endl;
     std::cout<<std::setw(width*3)<<"Helpers : "                                                                                                                 <<std::endl;
-    std::cout<<std::setw(width*3)<<"typeid(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4))).name() : "                             <<typeid(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4))).name()<<std::endl;
+    std::cout<<std::setw(width*3)<<"std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4))) : "                                   <<std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4)))<<std::endl;
     std::cout<<std::setw(width*3)<<"std::get<1>(i.apply<std::tuple<int, int> >([](const int& x){return x*2;}, std::make_tuple(4, 8))) : "                       <<std::get<1>(i.apply<std::tuple<int, int> >([](const int& x){return x*2;}, std::make_tuple(4, 8)))<<std::endl;
     std::cout<<std::setw(width*3)<<"i.apply<int>([](const int& x){return x*2;}, 4) : "                                                                          <<i.apply<int>([](const int& x){return x*2;}, 4)<<std::endl;
     std::cout<<std::setw(width*3)<<"i.accumulate<unsigned int, std::plus<unsigned int> >(std::make_tuple(4, 8)) : "                                             <<i.accumulate<unsigned int, std::plus<unsigned int> >(std::make_tuple(4, 8))<<std::endl;

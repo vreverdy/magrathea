@@ -89,8 +89,8 @@ class SimpleHyperOctree final
         inline const Container& operator()() const;
         inline Element& operator()(const Index& idx);
         inline const Element& operator()(const Index& idx) const;
-        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Element& operator()(Types&&... iposs);
-        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline const Element& operator()(Types&&... iposs) const;
+        template <typename... Types, class = typename std::enable_if<(sizeof...(Types) != 0)>::type, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Element& operator()(Types&&... iposs);
+        template <typename... Types, class = typename std::enable_if<(sizeof...(Types) != 0)>::type, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline const Element& operator()(Types&&... iposs) const;
     //@}
 
     // Assignment 
@@ -195,8 +195,8 @@ class SimpleHyperOctree final
     /// \name           Interpolation
     //@{
     public:
-        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Data ngp(Types&&... iposs) const; 
-        template <typename... Types, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Data cic(Types&&... iposs) const; 
+        template <typename... Types, class = typename std::enable_if<(sizeof...(Types) != 0)>::type, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Data ngp(Types&&... iposs) const; 
+        template <typename... Types, class = typename std::enable_if<(sizeof...(Types) != 0)>::type, class = typename std::enable_if<((std::is_convertible<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Type>::value) ? (sizeof...(Types) == Dimension) : (sizeof...(Types) == 1)) && (!std::is_same<typename std::tuple_element<0, std::tuple<typename std::remove_cv<typename std::remove_reference<Types>::type>::type...> >::type, Index>::value)>::type> inline Data cic(Types&&... iposs) const; 
     //@}
 
     // Stream 
@@ -223,7 +223,7 @@ class SimpleHyperOctree final
     public:
         template <class Template, class Tuple, typename... Kinds, class = typename std::enable_if<(sizeof...(Kinds)+1 <= std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)>::type> static constexpr Template tupleify(Tuple&& tuple, Kinds&&... values);
         template <class Template, class Tuple, typename... Kinds, class = typename std::enable_if<(sizeof...(Kinds) == std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)>::type> static constexpr Template tupleify(const Tuple& tuple, Kinds&&... values);
-        template <class Template, typename... Kinds, class = typename std::enable_if<std::is_convertible<typename std::tuple_element<0, typename std::conditional<sizeof...(Kinds), std::tuple<typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type...>, std::tuple<Template> >::type>::type, typename std::tuple_element<0, typename std::conditional<sizeof...(Kinds), Template, std::tuple<Template> >::type>::type>::value>::type> static constexpr Template tupleify(Kinds&&... values);
+        template <class Template, typename... Kinds, class = typename std::enable_if<std::is_convertible<typename std::tuple_element<0, typename std::conditional<static_cast<bool>(sizeof...(Kinds)), std::tuple<typename std::remove_cv<typename std::remove_reference<Kinds>::type>::type...>, std::tuple<Template> >::type>::type, typename std::tuple_element<0, typename std::conditional<static_cast<bool>(sizeof...(Kinds)), Template, std::tuple<Template> >::type>::type>::value>::type> static constexpr Template tupleify(Kinds&&... values);
         template <class Template, class Function, class Tuple, typename... Kinds, class = typename std::enable_if<(sizeof...(Kinds)+1 <= std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)>::type> static constexpr Template variadify(Function&& f, Tuple&& tuple, Kinds&&... values);
         template <class Template, class Function, class Tuple, typename... Kinds, class = typename std::enable_if<(sizeof...(Kinds) == std::tuple_size<typename std::remove_cv<typename std::remove_reference<Tuple>::type>::type>::value)>::type> static constexpr Template variadify(Function&& f, const Tuple& tuple, Kinds&&... values);
         template <class Template, class Function, typename... Kinds, class = typename std::enable_if<(!std::is_void<typename std::result_of<Function(Kinds...)>::type>::value) || (std::is_void<typename std::result_of<Function(Kinds...)>::type>::value)>::type> static constexpr Template variadify(Function&& f, Kinds&&... values);
@@ -380,7 +380,7 @@ inline const Element& SimpleHyperOctree<Type, Index, Data, Dimension, Position, 
 /// \param[in]      iposs Real positions along each dimension.
 /// \return         Reference to the element.
 template <typename Type, class Index, class Data, unsigned int Dimension, class Position, class Extent, class Element, class Container>
-template <typename... Types, class> 
+template <typename... Types, class, class> 
 inline Element& SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::operator()(Types&&... iposs)
 {
     return *(std::upper_bound(std::begin(_container), std::end(_container), Element(Index::template cipher<Type, Position, Extent>(std::forward<Types>(iposs)...), Data()), [](const Element& first, const Element& second){return std::get<0>(first) < std::get<0>(second);})-1);
@@ -394,7 +394,7 @@ inline Element& SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent
 /// \param[in]      iposs Real positions along each dimension.
 /// \return         Immutable reference to the element.
 template <typename Type, class Index, class Data, unsigned int Dimension, class Position, class Extent, class Element, class Container>
-template <typename... Types, class> 
+template <typename... Types, class, class> 
 inline const Element& SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::operator()(Types&&... iposs) const
 {
     return *(std::upper_bound(std::begin(_container), std::end(_container), Element(Index::template cipher<Type, Position, Extent>(std::forward<Types>(iposs)...), Data()), [](const Element& first, const Element& second){return std::get<0>(first) < std::get<0>(second);})-1);
@@ -1017,7 +1017,7 @@ inline SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element
     unsigned long long int marker = 0;
     _container.resize(std::distance(std::begin(_container), std::remove_if(std::begin(_container), std::end(_container), [](const Element& elem){return std::get<0>(elem).invalidated();})));
     marker = std::distance(std::begin(_container), std::is_sorted_until(std::begin(_container), std::end(_container), [](const Element& first, const Element& second){return std::get<0>(first) < std::get<0>(second);}));
-    if (marker < std::distance(std::begin(_container), std::end(_container))) {
+    if (marker < static_cast<unsigned long long int>(std::distance(std::begin(_container), std::end(_container)))) {
         std::sort(std::begin(_container)+marker, std::end(_container), [](const Element& first, const Element& second){return std::get<0>(first) < std::get<0>(second);});
         std::inplace_merge(std::begin(_container), std::begin(_container)+marker, std::end(_container), [](const Element& first, const Element& second){return std::get<0>(first) < std::get<0>(second);});
     }
@@ -1105,7 +1105,7 @@ inline SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element
 /// \param[in]      iposs Real positions along each dimension.
 /// \return         Value of the data at the provided position.
 template <typename Type, class Index, class Data, unsigned int Dimension, class Position, class Extent, class Element, class Container>
-template <typename... Types, class> 
+template <typename... Types, class, class> 
 inline Data SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::ngp(Types&&... iposs) const
 {
     const Element elem = Element(Index::template cipher<Type, Position, Extent>(std::forward<Types>(iposs)...), Data());
@@ -1121,7 +1121,7 @@ inline Data SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, El
 /// \param[in]      iposs Real positions along each dimension.
 /// \return         Value of the data at the provided position.
 template <typename Type, class Index, class Data, unsigned int Dimension, class Position, class Extent, class Element, class Container>
-template <typename... Types, class> 
+template <typename... Types, class, class> 
 inline Data SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::cic(Types&&... iposs) const
 {
     static const Type one = Type(1);
@@ -1321,7 +1321,7 @@ template <typename Type, class Index, class Data, unsigned int Dimension, class 
 template <class Template, class Tuple, typename... Kinds, class> 
 constexpr Template SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::tupleify(const Tuple& tuple, Kinds&&... values)
 {
-    return tupleify<typename std::conditional<sizeof(tuple), Template, Template>::type>(std::forward<Kinds>(values)...);
+    return tupleify<typename std::conditional<static_cast<bool>(sizeof(tuple)), Template, Template>::type>(std::forward<Kinds>(values)...);
 }
 
 // Convert values to a tuple
@@ -1373,7 +1373,7 @@ template <typename Type, class Index, class Data, unsigned int Dimension, class 
 template <class Template, class Function, class Tuple, typename... Kinds, class> 
 constexpr Template SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::variadify(Function&& f, const Tuple& tuple, Kinds&&... values)
 {
-    return variadify<typename std::conditional<sizeof(tuple), Template, Template>::type>(std::forward<Function>(f), std::forward<Kinds>(values)...);
+    return variadify<typename std::conditional<static_cast<bool>(sizeof(tuple)), Template, Template>::type>(std::forward<Function>(f), std::forward<Kinds>(values)...);
 }
 
 // Forward values to a variadic function
@@ -1461,7 +1461,7 @@ template <typename Type, class Index, class Data, unsigned int Dimension, class 
 template <class Irregular, typename Kind, class... Dummy, class> 
 constexpr Irregular& SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::mac(Irregular& accumulator, const Irregular& factor, const Kind coefficient, const Dummy...)
 {
-    return (std::integral_constant<bool, sizeof(factor)+sizeof(coefficient)>::value) ? (accumulator) : (accumulator);
+    return (std::integral_constant<bool, static_cast<bool>(sizeof(factor)+sizeof(coefficient))>::value) ? (accumulator) : (accumulator);
 }
 //--------------------------------------------------------------------------- //
 
@@ -1486,7 +1486,7 @@ int SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, C
 
     // Construction
     SimpleHyperOctree<double, SimpleHyperOctreeIndex<unsigned long long int, 3>, double> octree(0, 4);
-    std::pair<SimpleHyperOctreeIndex<unsigned long long int, 3>, double> element();
+    std::pair<SimpleHyperOctreeIndex<unsigned long long int, 3>, double> element{};
 
     // Lifecycle
     std::cout<<std::endl;
