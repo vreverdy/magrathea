@@ -1407,7 +1407,7 @@ template <typename Type, class Index, class Data, unsigned int Dimension, class 
 template <unsigned int Step, class Object, typename Kind, class> 
 constexpr Object& SimpleHyperOctree<Type, Index, Data, Dimension, Position, Extent, Element, Container>::mac(Object& accumulator, const Object& factor, const Kind coefficient)
 {
-    return (&(mac(accumulator.data(), factor.data(), coefficient*(sizeof(Step)/sizeof(Step)))) != nullptr) ? (accumulator) : (accumulator);
+    return (mac(accumulator.data(), factor.data(), coefficient*(sizeof(Step)/sizeof(Step))), accumulator);
 }
 
 // Multiply-accumulate tuples

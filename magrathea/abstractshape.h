@@ -141,7 +141,7 @@ constexpr Type AbstractShape::pow(const Type& value)
 template <int Degree, typename Type>
 constexpr Type AbstractShape::rt(const Type& value)
 {
-    return (Degree > 0) ? (((Degree == 0) || (Degree > 3)) ? (std::pow(value, Type(1)/Type(Degree))) : ((Degree == 3) ? (std::cbrt(value)) : ((Degree == 2) ? (std::sqrt(value)) : (value)))) : ((Degree < 0) ? ((Degree < 0) ? ((Degree < 0) ? (Type(1)/rt<(-Degree)*(Degree < 0), Type>(value)) : (value)) : (value)) : (value));
+    return (Degree > 0) ? (((Degree == 0) || (Degree > 3)) ? (std::pow(value, Type(1)/Type(Degree))) : ((Degree == 3) ? (std::cbrt(value)) : ((Degree == 2) ? (std::sqrt(value)) : (value)))) : ((Degree < 0) ? ((Degree < 0) ? ((Degree < 0) ? ((Degree < 0) ? (Type(1)/rt<(-Degree)*(Degree < 0), Type>(value)) : (value)) : (value)) : (value)) : (value));
 }
 
 // Factorial
@@ -187,7 +187,7 @@ template <int Set, int Subset, typename Type>
 constexpr Type AbstractShape::binomial()
 {
     static_assert((!std::is_unsigned<Type>::value) || ((Set >= 0) && (Subset >= 0)), "ERROR = AbstractShape::binomial() : sign error");
-    //////static_assert((Subset <= 0) || (Subset > Set) || (((binomial<Set-((Subset > 0) && (Subset <= Set)), Subset-((Subset > 0) && (Subset <= Set)), Type>()/2)+(binomial<Set-((Subset > 0) && (Subset <= Set)), Subset, Type>()/2)) < (std::numeric_limits<Type>::max()/2)), "ERROR = AbstractShape::binomial() : overflow");
+    ////////static_assert((Subset <= 0) || (Subset > Set) || (((binomial<Set-((Subset > 0) && (Subset <= Set)), Subset-((Subset > 0) && (Subset <= Set)), Type>()/2)+(binomial<Set-((Subset > 0) && (Subset <= Set)), Subset, Type>()/2)) < (std::numeric_limits<Type>::max()/2)), "ERROR = AbstractShape::binomial() : overflow");
     return (Set >= 0) ? (((Subset >= 0) && (Subset <= Set)) ? ((Subset > 0) ? (binomial<Set-((Subset > 0) && (Subset <= Set)), Subset-((Subset > 0) && (Subset <= Set)), Type>()+binomial<Set-((Subset > 0) && (Subset <= Set)), Subset, Type>()) : (Type(1))) : (Type(0))) : ((Subset >= 0) ? (Type((Subset%2 == 0) ? (1) : (-1))*binomial<(-Set+Subset-1)*((Set < 0) && (Subset >= 0)), Subset*((Set < 0) && (Subset >= 0)), Type>()) : ((Subset <= Set) ? (Type(((Set-Subset)%2 == 0) ? (1) : (-1))*binomial<(-Subset-1)*((Subset <= Set) && (Set < 0)), (Set-Subset)*((Subset <= Set) && (Set < 0)), Type>()) : (Type(0))));
 }
 

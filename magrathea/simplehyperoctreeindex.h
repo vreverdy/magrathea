@@ -1973,7 +1973,7 @@ int SimpleHyperOctreeIndex<Type, Dimension, Bits>::example()
     // Helpers
     std::cout<<std::endl;
     std::cout<<std::setw(width*3)<<"Helpers : "                                                                                                                 <<std::endl;
-    std::cout<<std::setw(width*3)<<"std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4))) : "                                   <<std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4)))<<std::endl;
+    std::cout<<std::setw(width*3)<<"std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4))) : "                                     <<std::get<0>(i.apply<std::tuple<int> >([](const int& x){return x*2;}, std::make_tuple(4)))<<std::endl;
     std::cout<<std::setw(width*3)<<"std::get<1>(i.apply<std::tuple<int, int> >([](const int& x){return x*2;}, std::make_tuple(4, 8))) : "                       <<std::get<1>(i.apply<std::tuple<int, int> >([](const int& x){return x*2;}, std::make_tuple(4, 8)))<<std::endl;
     std::cout<<std::setw(width*3)<<"i.apply<int>([](const int& x){return x*2;}, 4) : "                                                                          <<i.apply<int>([](const int& x){return x*2;}, 4)<<std::endl;
     std::cout<<std::setw(width*3)<<"i.accumulate<unsigned int, std::plus<unsigned int> >(std::make_tuple(4, 8)) : "                                             <<i.accumulate<unsigned int, std::plus<unsigned int> >(std::make_tuple(4, 8))<<std::endl;

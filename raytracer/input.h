@@ -333,7 +333,7 @@ inline unsigned int Input::sistemize(Octree& octree, const Type h, const Type om
 template <class Data, class>
 inline Data Input::homogenize(const Data& data)
 {
-    static const Data zero = Data();
+    thread_local const Data zero = Data();
     Data result = data;
     result.rho() = zero.rho();
     result.phi() = zero.phi();
@@ -380,7 +380,7 @@ inline Data Input::schwarzschildify(const Data& data, const Vector& center, cons
 {
     static const Type extent = Type(Extent::num)/Type(Extent::den);
     static const Type null = Type();
-    static const Data zero = Data();
+    thread_local const Data zero = Data();
     const Vector v = Utility::join<Dimension>(position, center);
     const Type r = Utility::distance<Dimension>(position, center);
     const Type l = length/extent;
@@ -420,7 +420,7 @@ template <class Octree, class Vector, typename Type, class Function, class... Du
 inline unsigned int Input::schwarzschildify(Octree& octree, const Vector& position, const Type mass, const Type length, Function&& refiner, Dummy...)
 {
     unsigned int size = octree.size();
-    std::vector<bool> refine(size);
+    std::vector<unsigned char> refine(size);
     do {
         size = octree.size();
         Utility::parallelize(octree.begin(), octree.end(), [=, &position, &length](Element& element){std::get<1>(element) = schwarzschildify<Extent>(std::get<1>(element), std::array<Type, Dimension>({{std::get<0>(element).position(0), std::get<0>(element).position(1), std::get<0>(element).position(2)}}), position, mass, length);});
@@ -996,8 +996,8 @@ Octree& Input::correct(Octree& octree, bool complete, bool coarse, const bool ac
     if (Check >= zero) {
         if (complete) {
             for (unsigned int n = ncoarse; n <= nmax; ++n) {
-                Utility::parallelize(size, [=, &n, &count, &octree](const unsigned int i){count[i] = ((std::get<0>(octree[i]).level() == n) && (!std::isnormal(std::get<1>(octree[i]).template data<Selection>())));});
-                Utility::parallelize(size, [=, &n, &count, &octree](const unsigned int i){if (count[i] > zero) {std::get<1>(octree[i]).template data<Selection>() = std::get<1>(*octree.find(std::get<0>(octree[i]).parent())).template data<Selection>();}});
+                Utility::parallelize(size, [=, &count, &octree](const unsigned int i){count[i] = ((std::get<0>(octree[i]).level() == n) && (!std::isnormal(std::get<1>(octree[i]).template data<Selection>())));});
+                Utility::parallelize(size, [=, &count, &octree](const unsigned int i){if (count[i] > zero) {std::get<1>(octree[i]).template data<Selection>() = std::get<1>(*octree.find(std::get<0>(octree[i]).parent())).template data<Selection>();}});
             }
         } else {
             Utility::parallelize(size, [=, &ncoarse, &count, &octree](const unsigned int i){if ((std::get<0>(octree[i]).level() > ncoarse) && (!std::isnormal(std::get<1>(octree[i]).template data<Selection>()))) {count[i] = std::distance(octree.begin(), octree.find(std::get<0>(octree[i]).parent()))+one;}});
@@ -1135,8 +1135,8 @@ int Input::example()
     // Cones
     std::cout<<std::endl;
     std::cout<<std::setw(width)<<"Cones : "                                     <<std::endl;
-    std::cout<<std::setw(width)<<"input.save(ftree, \"/tmp/file_00000\") : "    <<input.save(ftree, "/tmp/file_00000")<<std::endl;
-    std::cout<<std::setw(width)<<"input.load(ftree, \"/tmp/file_00000\") : "    <<input.load(ftree, "/tmp/file_00000")<<std::endl;
+    std::cout<<std::setw(width)<<"input.save(counter, \"/tmp/file_00000\") : "  <<input.save(counter, "/tmp/file_00000")<<std::endl;
+    std::cout<<std::setw(width)<<"input.load(counter, \"/tmp/file_00000\") : "  <<input.load(counter, "/tmp/file_00000")<<std::endl;
     
     // Correction
     std::cout<<std::endl;
